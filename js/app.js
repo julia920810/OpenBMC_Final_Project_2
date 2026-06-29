@@ -586,6 +586,7 @@ function drawLineChart(canvas, series) {
     }
 
     if (!window.Chart) {
+        console.error('Chart.js is not loaded. window.Chart state:', chartGlobalState());
         showChartError(canvas, series, new Error('Chart.js is not loaded.'));
         return;
     }
@@ -639,6 +640,7 @@ function showChartCanvas(canvas) {
 
 function showChartError(canvas, series, error) {
     console.error(`Chart render failed for ${series.category}/${series.sensorName}:`, error);
+    console.error('Current window.Chart state:', chartGlobalState());
     const chartId = chartIdFor(series.category, series.sensorName);
     const existing = chartInstances.get(chartId);
     if (existing) {
@@ -657,6 +659,15 @@ function showChartError(canvas, series, error) {
         errorEl.textContent = 'Unable to load chart.';
         errorEl.hidden = false;
     }
+}
+
+function chartGlobalState() {
+    return {
+        hasChart: Boolean(window.Chart),
+        type: typeof window.Chart,
+        version: window.Chart?.version || null,
+        value: window.Chart || null
+    };
 }
 
 function hideChartContainer(canvas, series) {
