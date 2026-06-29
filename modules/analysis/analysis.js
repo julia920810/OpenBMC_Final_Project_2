@@ -574,12 +574,6 @@ function buildCompositeEventSummaries() {
             rootCauseTitle: rules[0] || 'Observed Event Pattern',
             rootCauseClass: rules.length ? 'root-cause-badge' : 'observed-pattern-badge',
             rules,
-            reason: rules.length
-                ? 'This event matches predefined rule-based RCA category combinations.'
-                : 'This event shows temporal co-occurrence between selected sensors, but it does not match predefined root cause rules.',
-            recommendedAction: rules.length
-                ? 'Review the event sequence and affected sensors for operational context.'
-                : 'Review sensor behavior and consider adding a new RCA rule if this pattern is meaningful.',
             significantEvidence: significantCorrelationEvidence(sensorNames)
         };
     });
@@ -624,8 +618,6 @@ function renderEventTimeline() {
                 <div class="rca-evidence-item"><span>Anomaly Count</span><strong>${escapeHtml(event.count)}</strong></div>
                 <div class="rca-evidence-item"><span>Detected Anomaly Level</span><strong>${renderBadges(event.levels, 'level-badge')}</strong></div>
                 <div class="rca-evidence-item"><span>Detected Event Pattern</span><strong>${escapeHtml(event.pattern || '-')}</strong></div>
-                <div class="rca-evidence-item"><span>Reason</span><strong>${escapeHtml(event.reason)}</strong></div>
-                <div class="rca-evidence-item"><span>Recommended Action</span><strong>${escapeHtml(event.recommendedAction)}</strong></div>
             </div>
             <section class="event-sequence-card">
                 <h4>Event Sequence</h4>
