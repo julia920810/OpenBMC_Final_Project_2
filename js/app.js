@@ -1046,14 +1046,18 @@ function updateCategoryCounts() {
 
 function updateStatistics() {
     const allSensors = Object.values(sensorsData).flat();
-    els.totalSensors.textContent = allSensors.length;
-    els.activeSensors.textContent = allSensors.filter(sensor => normalizeLevel(sensor.anomalyLevel) === 'normal').length;
+    if (els.totalSensors) els.totalSensors.textContent = allSensors.length;
+    if (els.activeSensors) {
+        els.activeSensors.textContent = allSensors.filter(sensor => normalizeLevel(sensor.anomalyLevel) === 'normal').length;
+    }
     const latestTimestamp = Object.values(sensorSeriesByCategory)
         .flat()
         .map(series => currentPointForSeries(series)?.timestampMs)
         .filter(Number.isFinite)
         .sort((a, b) => b - a)[0];
-    els.lastUpdate.textContent = Number.isFinite(latestTimestamp) ? timestampToLabel(latestTimestamp) : '-';
+    if (els.lastUpdate) {
+        els.lastUpdate.textContent = Number.isFinite(latestTimestamp) ? timestampToLabel(latestTimestamp) : '-';
+    }
     updateCategoryCounts();
 }
 
