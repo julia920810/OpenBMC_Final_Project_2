@@ -1,0 +1,2 @@
+﻿sensor_type,sensor_name,path,count,min,max,mean,median,std,var,q1,q3,iqr,mad,range,iqr_lower_bound,iqr_upper_bound,anomaly_count,anomaly_ratio,max_anomaly_score,mean_anomaly_score,iqr_outlier_count,sensor_anomaly_level
+airflow,SYSTEM_AIRFLOW_CFM,/xyz/openbmc_project/sensors/airflow/SYSTEM_AIRFLOW_CFM,8229,621.3467,625.8278,623.7049527251186,623.789075,0.5567707899744969,0.3099937125688254,623.303525,624.058175,0.7546499999999696,0.34514999999998963,4.481099999999969,622.17155,625.1901499999999,526,0.0639202819297606,7.076271186440803,1.282082177334834,66,Medium

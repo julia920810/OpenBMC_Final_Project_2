@@ -1,0 +1,2 @@
+﻿sensor_type,sensor_name,path,count,min,max,mean,median,std,var,q1,q3,iqr,mad,range,iqr_lower_bound,iqr_upper_bound,anomaly_count,anomaly_ratio,max_anomaly_score,mean_anomaly_score,iqr_outlier_count,sensor_anomaly_level
+temperature,MGNT_TEMP_C,/xyz/openbmc_project/sensors/temperature/MGNT_TEMP_C,732,23.562,24.25,23.90548907103825,23.875,0.12220898268176736,0.014935035448112515,23.812,24.0,0.18799999999999883,0.06299999999999883,0.6879999999999988,23.53,24.281999999999996,56,0.07650273224043716,5.952380952381063,1.59849076242522,0,Low
