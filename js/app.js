@@ -265,6 +265,7 @@ function buildSensorsData() {
                 lowerBound: current.lowerBound,
                 upperBound: current.upperBound,
                 anomalyLevel: current.anomalyLevel,
+                timestampMs: current.timestampMs,
                 status: current.isAnomaly ? 'warning' : 'normal',
                 taipeiTime: `Time: ${timestampToLabel(current.timestampMs)}`,
                 category
@@ -370,19 +371,9 @@ function resetSeriesZoom(series) {
 }
 
 function refreshAfterSeriesChange() {
-    stopAllReplayTimers();
     sensorsData = buildSensorsData();
     updateStatistics();
     if (activeCategory) renderActiveCategory();
-}
-
-function stopAllReplayTimers() {
-    Object.values(sensorSeriesByCategory).flat().forEach(series => {
-        if (series.timer) clearTimeout(series.timer);
-        series.timer = null;
-        series.isPlaying = false;
-        series.mode = 'static';
-    });
 }
 
 function refreshSeriesDisplay(series) {
@@ -420,18 +411,31 @@ function renderSensorChartCard(category, series) {
     const current = currentPointForSeries(series);
     const level = normalizeLevel(current.anomalyLevel);
     const title = `${category} - ${series.sensorName}`;
-    series.mode = 'static';
-    series.isPlaying = false;
+    const modeLabel = series.mode === 'static' ? 'Static Analysis' : 'Replay Mode';
     const chartHeight = chartHeightForSeries(series);
     return `
-        <article class="chart-card chart-mode-${escapeHtml(series.mode)}">
+        <article class="chart-card chart-mode-${escapeHtml(series.mode)}" data-chart-card>
             <div class="chart-card-header">
                 <h3>${escapeHtml(title)}</h3>
-                <span class="anomaly-pill ${escapeHtml(level)}">${escapeHtml(current.anomalyLevel)}</span>
+                <span class="anomaly-pill ${escapeHtml(level)}" data-chart-anomaly-level>${escapeHtml(current.anomalyLevel)}</span>
             </div>
             <div class="chart-control-panel" data-category="${escapeHtml(category)}" data-sensor-name="${escapeHtml(series.sensorName)}">
-                <button type="button" class="control-btn secondary" data-action="reset-zoom" onpointerdown="window.SensorDashboard.handleChartControlActionOnce(this)" onmousedown="window.SensorDashboard.handleChartControlActionOnce(this)" onclick="window.SensorDashboard.handleChartControlActionOnce(this)">Reset Zoom</button>
-                <div class="chart-mode-state">Static Analysis</div>
+                <div class="segmented-control chart-mode-control">
+                    <button type="button" class="mode-btn ${series.mode === 'static' ? 'active' : ''}" data-action="mode" data-mode="static" onpointerdown="window.SensorDashboard.handleChartControlActionOnce(this)" onmousedown="window.SensorDashboard.handleChartControlActionOnce(this)" onclick="window.SensorDashboard.handleChartControlActionOnce(this)">Static Analysis</button>
+                    <button type="button" class="mode-btn ${series.mode === 'replay' ? 'active' : ''}" data-action="mode" data-mode="replay" onpointerdown="window.SensorDashboard.handleChartControlActionOnce(this)" onmousedown="window.SensorDashboard.handleChartControlActionOnce(this)" onclick="window.SensorDashboard.handleChartControlActionOnce(this)">Replay Mode</button>
+                </div>
+                <div class="replay-controls">
+                    <button type="button" class="control-btn" data-action="play" onpointerdown="window.SensorDashboard.handleChartControlActionOnce(this)" onmousedown="window.SensorDashboard.handleChartControlActionOnce(this)" onclick="window.SensorDashboard.handleChartControlActionOnce(this)">Play</button>
+                    <button type="button" class="control-btn" data-action="pause" onpointerdown="window.SensorDashboard.handleChartControlActionOnce(this)" onmousedown="window.SensorDashboard.handleChartControlActionOnce(this)" onclick="window.SensorDashboard.handleChartControlActionOnce(this)">Pause</button>
+                    <button type="button" class="control-btn" data-action="reset" onpointerdown="window.SensorDashboard.handleChartControlActionOnce(this)" onmousedown="window.SensorDashboard.handleChartControlActionOnce(this)" onclick="window.SensorDashboard.handleChartControlActionOnce(this)">Reset</button>
+                    <button type="button" class="control-btn secondary" data-action="reset-zoom" onpointerdown="window.SensorDashboard.handleChartControlActionOnce(this)" onmousedown="window.SensorDashboard.handleChartControlActionOnce(this)" onclick="window.SensorDashboard.handleChartControlActionOnce(this)">Reset Zoom</button>
+                </div>
+                <div class="chart-slider-group">
+                    <label>Timeline</label>
+                    <input type="range" class="timeline-slider" data-action="timeline" min="0" max="${series.records.length - 1}" value="${series.currentIndex}">
+                    <span data-timeline-label>${escapeHtml(timestampToLabel(current.timestampMs))}</span>
+                </div>
+                <div class="chart-mode-state" data-chart-mode-state>${escapeHtml(modeLabel)}${series.isPlaying ? ' - Playing' : ''}</div>
                 <p class="chart-usage-hint">Use mouse wheel to zoom, drag to pan, and hover to inspect values.</p>
             </div>
             <div class="chart-container" data-chart-container style="height: ${chartHeight}px;">
@@ -446,13 +450,14 @@ function renderSensorChartCard(category, series) {
                 <span><i class="legend-line lower-line"></i>Lower Bound</span>
                 <span><i class="legend-line upper-line"></i>Upper Bound</span>
                 <span><i class="legend-dot low-dot"></i>LOW / HIGH</span>
+                <span><i class="legend-marker"></i>Replay position</span>
             </div>
         </article>
     `;
 }
 
 function chartHeightForSeries(series) {
-    return 400;
+    return series.mode === 'replay' ? 350 : 400;
 }
 
 function renderSensorPanels(category, sensors) {
@@ -554,12 +559,20 @@ function updateSensorPanel(series) {
     if (!panel) return;
     const level = normalizeLevel(sensor.anomalyLevel);
     const card = panel.querySelector('[data-sensor-card]');
+    const statusEl = panel.querySelector('.sensor-status');
     const valueEl = panel.querySelector('[data-current-value]');
     const levelEl = panel.querySelector('[data-anomaly-level]');
     const timeEl = panel.querySelector('[data-event-time]');
+    const chartLevelEl = panel.querySelector('[data-chart-anomaly-level]');
+    const timelineInput = panel.querySelector('.timeline-slider');
+    const timelineLabel = panel.querySelector('[data-timeline-label]');
+    const modeStateEl = panel.querySelector('[data-chart-mode-state]');
     if (card) {
         card.classList.remove('anomaly-normal', 'anomaly-low', 'anomaly-high');
         card.classList.add(`anomaly-${level}`);
+    }
+    if (statusEl) {
+        statusEl.className = `sensor-status ${level}`;
     }
     if (valueEl) {
         valueEl.className = `detail-value ${level}`;
@@ -570,6 +583,16 @@ function updateSensorPanel(series) {
         levelEl.textContent = sensor.anomalyLevel;
     }
     if (timeEl) timeEl.textContent = sensor.taipeiTime;
+    if (chartLevelEl) {
+        chartLevelEl.className = `anomaly-pill ${level}`;
+        chartLevelEl.textContent = sensor.anomalyLevel;
+    }
+    if (timelineInput) timelineInput.value = series.currentIndex;
+    if (timelineLabel) timelineLabel.textContent = timestampToLabel(sensor.timestampMs);
+    if (modeStateEl) {
+        const modeLabel = series.mode === 'static' ? 'Static Analysis' : 'Replay Mode';
+        modeStateEl.textContent = `${modeLabel}${series.isPlaying ? ' - Playing' : ''}`;
+    }
 }
 
 function cssEscape(value) {
@@ -725,6 +748,8 @@ function buildChartDatasets(series) {
             value: record.value,
             timeLabel: timestampToLabel(record.timestampMs)
         }));
+    const current = currentPointForSeries(series);
+    const markerPoints = current ? [{ x: current.timestampMs, y: current.value }] : [];
     return [
         {
             label: 'Sensor Value',
@@ -765,6 +790,15 @@ function buildChartDatasets(series) {
             backgroundColor: context => normalizeLevel(context.raw?.anomalyLevel) === 'high' ? '#dc2626' : '#f59e0b',
             pointRadius: 6,
             pointHoverRadius: 8,
+            showLine: false
+        },
+        {
+            label: 'Replay position marker',
+            data: markerPoints,
+            borderColor: '#111827',
+            backgroundColor: '#111827',
+            pointRadius: series.mode === 'replay' ? 7 : 0,
+            pointHoverRadius: series.mode === 'replay' ? 8 : 0,
             showLine: false
         }
     ];
