@@ -411,7 +411,7 @@ function renderSensorChartCard(category, series) {
     const current = currentPointForSeries(series);
     const level = normalizeLevel(current.anomalyLevel);
     const title = `${category} - ${series.sensorName}`;
-    const modeLabel = series.mode === 'static' ? 'Static Analysis' : 'Replay Mode';
+    const modeLabel = series.mode === 'static' ? 'Data Analysis' : 'Replay Mode';
     const chartHeight = chartHeightForSeries(series);
     return `
         <article class="chart-card chart-mode-${escapeHtml(series.mode)}" data-chart-card>
@@ -421,7 +421,7 @@ function renderSensorChartCard(category, series) {
             </div>
             <div class="chart-control-panel" data-category="${escapeHtml(category)}" data-sensor-name="${escapeHtml(series.sensorName)}">
                 <div class="segmented-control chart-mode-control">
-                    <button type="button" class="mode-btn ${series.mode === 'static' ? 'active' : ''}" data-action="mode" data-mode="static" onpointerdown="window.SensorDashboard.handleChartControlActionOnce(this)" onmousedown="window.SensorDashboard.handleChartControlActionOnce(this)" onclick="window.SensorDashboard.handleChartControlActionOnce(this)">Static Analysis</button>
+                    <button type="button" class="mode-btn ${series.mode === 'static' ? 'active' : ''}" data-action="mode" data-mode="static" onpointerdown="window.SensorDashboard.handleChartControlActionOnce(this)" onmousedown="window.SensorDashboard.handleChartControlActionOnce(this)" onclick="window.SensorDashboard.handleChartControlActionOnce(this)">Data Analysis</button>
                     <button type="button" class="mode-btn ${series.mode === 'replay' ? 'active' : ''}" data-action="mode" data-mode="replay" onpointerdown="window.SensorDashboard.handleChartControlActionOnce(this)" onmousedown="window.SensorDashboard.handleChartControlActionOnce(this)" onclick="window.SensorDashboard.handleChartControlActionOnce(this)">Replay Mode</button>
                 </div>
                 <div class="replay-controls">
