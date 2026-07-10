@@ -590,7 +590,7 @@ function updateSensorPanel(series) {
     if (timelineInput) timelineInput.value = series.currentIndex;
     if (timelineLabel) timelineLabel.textContent = timestampToLabel(sensor.timestampMs);
     if (modeStateEl) {
-        const modeLabel = series.mode === 'static' ? 'Static Analysis' : 'Replay Mode';
+        const modeLabel = series.mode === 'static' ? 'Data Analysis' : 'Replay Mode';
         modeStateEl.textContent = `${modeLabel}${series.isPlaying ? ' - Playing' : ''}`;
     }
 }
