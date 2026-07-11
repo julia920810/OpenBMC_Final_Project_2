@@ -111,6 +111,16 @@ function timestampToLabel(timestampMs) {
     return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
 }
 
+function timestampToMobileLabel(timestampMs) {
+    const label = timestampToLabel(timestampMs);
+    const timePart = label.split(' ')[1];
+    return timePart || label;
+}
+
+function isMobileChartViewport() {
+    return window.matchMedia('(max-width: 640px)').matches;
+}
+
 function registerSensorModule(name, module) {
     sensorModules[name] = module;
     window.sensorModules = sensorModules;
@@ -802,6 +812,7 @@ function buildChartDatasets(series) {
 
 function buildChartOptions(series) {
     const yRange = getSeriesYRange(series);
+    const isMobile = isMobileChartViewport();
     const xScale = {
         type: 'linear',
         title: {
@@ -809,8 +820,10 @@ function buildChartOptions(series) {
             text: 'Time (timestamp)'
         },
         ticks: {
+            autoSkip: true,
+            maxTicksLimit: isMobile ? 3 : 6,
             maxRotation: 0,
-            callback: value => timestampToLabel(value)
+            callback: value => isMobile ? timestampToMobileLabel(value) : timestampToLabel(value)
         }
     };
     if (series.zoomRange) {

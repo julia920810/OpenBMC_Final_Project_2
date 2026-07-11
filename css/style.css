@@ -914,6 +914,73 @@ a.category-btn {
         gap: 6px;
     }
 }
+
+@media (max-width: 640px) {
+    .sensor-panel {
+        display: block;
+        width: 100%;
+    }
+
+    .sensor-panel .sensor-card {
+        height: auto;
+        margin-bottom: 14px;
+    }
+
+    .sensor-panel .sensor-details {
+        height: auto;
+        justify-content: flex-start;
+    }
+
+    .chart-card {
+        width: 100%;
+        padding: 12px;
+        overflow: visible;
+    }
+
+    .chart-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .chart-control-panel {
+        padding: 10px;
+    }
+
+    .chart-mode-control,
+    .chart-control-panel .replay-controls {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+    }
+
+    .chart-mode-control .mode-btn,
+    .chart-control-panel .control-btn {
+        min-width: 0;
+        width: 100%;
+        padding: 9px 8px;
+        font-size: 0.86rem;
+    }
+
+    .chart-container,
+    .chart-mode-static .chart-container {
+        height: 330px;
+        max-height: none;
+    }
+
+    .chart-mode-replay .chart-container {
+        height: 310px;
+        max-height: none;
+    }
+
+    .sensor-chart {
+        max-height: none;
+    }
+
+    .chart-legend {
+        font-size: 0.76rem;
+        gap: 6px 10px;
+    }
+}
 /* ========================
    Footer
    ======================== */
