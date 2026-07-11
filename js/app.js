@@ -677,8 +677,7 @@ function setChartContainerHeight(canvas, series) {
     if (!container) return;
     const height = chartHeightForSeries(series);
     container.style.height = `${height}px`;
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
+    applyResponsiveCanvasStyle(canvas, container);
     canvas.height = height;
 }
 
@@ -692,6 +691,7 @@ function resizeChartToContainer(chart, canvas) {
         const height = Math.floor(rect.height);
         if (width > 0 && height > 0) {
             chart.resize(width, height);
+            applyResponsiveCanvasStyle(canvas, container);
             chart.update('none');
         }
     };
@@ -700,6 +700,13 @@ function resizeChartToContainer(chart, canvas) {
         resize();
         requestAnimationFrame(resize);
     });
+}
+
+function applyResponsiveCanvasStyle(canvas, container) {
+    const width = Math.floor(container.getBoundingClientRect().width);
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.maxWidth = width > 0 ? `${width}px` : '100%';
 }
 
 function showChartCanvas(canvas) {
