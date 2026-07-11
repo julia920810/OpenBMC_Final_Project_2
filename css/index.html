@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenBMC D-Bus Sensor Data Dashboard</title>
+    <link rel="stylesheet" href="css/style.css?v=20260712-chart-right">
+    <link rel="stylesheet" href="modules/airflow/airflow.css">
+    <link rel="stylesheet" href="modules/temperature/temperature.css">
+    <link rel="stylesheet" href="modules/power/power.css">
+    <link rel="stylesheet" href="modules/voltage/voltage.css">
+    <link rel="stylesheet" href="modules/method-status/method-status.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1>OpenBMC D-Bus Sensor Data Dashboard</h1>
+                <p class="subtitle">114_2 平行與分散式系統:程式設計與管理期末專案</p>
+                <p class="subtitle">NQ6144060 林芷翊、NQ6144086 洪翊芯</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div id="homeView" class="view active">
+                <section class="sensor-categories">
+                    <h2>Sensor Categories</h2>
+                    <div class="category-grid">
+                        <button class="category-btn" data-category="Temperature">
+                            <div class="icon">🌡️</div>
+                            <div class="label">Temperature</div>
+                            <div class="count">溫度</div>
+                        </button>
+                        <button class="category-btn" data-category="Airflow">
+                            <div class="icon">💨</div>
+                            <div class="label">Airflow</div>
+                            <div class="count">風量</div>
+                        </button>
+                        <button class="category-btn" data-category="Power">
+                            <div class="icon">🔌</div>
+                            <div class="label">Power</div>
+                            <div class="count">功率</div>
+                        </button>
+                        <button class="category-btn" data-category="Voltage">
+                            <div class="icon">🔋</div>
+                            <div class="label">Voltage</div>
+                            <div class="count">電壓</div>
+                        </button>
+                    </div>
+                    <h2>DBUS Method Call Status</h2>
+                        <div class="standalone-category">
+                            <button class="category-btn" data-category="MethodStatus">
+                            <div class="icon">DBUS</div>
+                            <div class="label">Method Call Status</div>
+                            <div class="count">Method Calls</div>
+                        </button>
+                        </div>
+                    <br>
+                    <h2>RCA Analysis</h2>  
+                        <div class="standalone-category">
+                            <a class="category-btn analysis-entry" href="./modules/analysis/analysis.html">
+                            <div class="icon">RCA</div>
+                            <div class="label">Analysis</div>
+                            <div class="count">Correlation / Root Cause</div>
+                            </a>
+                        </div>
+                        
+                </section>
+
+                
+            </div>
+
+            <div id="categoryView" class="view">
+                <div class="category-header">
+                    <button class="back-btn" id="backBtn">Back</button>
+                    <h2 id="categoryTitle">Sensor Category</h2>
+                    <div class="spacer"></div>
+                </div>
+                <div class="sensor-list" id="sensorList"></div>
+            </div>
+
+            <div id="temperatureBaselineView" class="view">
+                <div id="temperatureModuleMount"></div>
+            </div>
+        </main>
+
+        <div id="warningToast" class="warning-toast">
+            <span id="warningMessage">temperature/MGNT_TEMP_C exceeds temperature baseline threshold</span>
+        </div>
+
+        <footer class="footer">
+           <p>114_2 平行與分散式系統:程式設計與管理期末專案</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+    <script>window.Chart || document.write('<script src="vendor/chart.umd.min.js"><\/script>');</script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+    <script>window.Hammer || document.write('<script src="vendor/hammer.min.js"><\/script>');</script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
+    <script>window.ChartZoom || document.write('<script src="vendor/chartjs-plugin-zoom.min.js"><\/script>');</script>
+    <script src="modules/airflow/airflow.js"></script>
+    <script src="modules/temperature/temperature.js"></script>
+    <script src="modules/power/power.js"></script>
+    <script src="modules/voltage/voltage.js"></script>
+    <script src="modules/method-status/method-status.js"></script>
+    <script src="js/app.js?v=20260629-replay-sync-anomaly"></script>
+</body>
+</html>

@@ -362,7 +362,7 @@ a.category-btn {
    ======================== */
 .sensor-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 
@@ -502,14 +502,18 @@ a.category-btn {
 
 .sensor-panel {
     display: grid;
-    gap: 16px;
+    grid-template-columns: minmax(280px, 0.38fr) minmax(520px, 1fr);
+    align-items: start;
+    gap: 20px;
     min-width: 0;
     content-visibility: auto;
-    contain-intrinsic-size: 760px 760px;
+    contain-intrinsic-size: 1040px 520px;
 }
 
 .sensor-panel .sensor-card {
     min-height: 230px;
+    position: sticky;
+    top: 16px;
 }
 
 .sensor-name-value,
@@ -915,6 +919,16 @@ a.category-btn {
 /* ========================
    Responsive Design
    ======================== */
+@media (max-width: 1100px) {
+    .sensor-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .sensor-panel .sensor-card {
+        position: static;
+    }
+}
+
 @media (max-width: 768px) {
     .header-content h1 {
         font-size: 1.8rem;
