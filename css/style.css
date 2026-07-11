@@ -681,8 +681,8 @@ a.category-btn {
 
 .sensor-chart {
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     max-height: 450px;
 }
 
@@ -919,6 +919,8 @@ a.category-btn {
     .sensor-panel {
         display: block;
         width: 100%;
+        content-visibility: visible;
+        contain-intrinsic-size: auto;
     }
 
     .sensor-panel .sensor-card {

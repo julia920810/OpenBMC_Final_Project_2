@@ -463,6 +463,7 @@ function renderSensorChartCard(category, series) {
 }
 
 function chartHeightForSeries(series) {
+    if (isMobileChartViewport()) return series.mode === 'replay' ? 310 : 330;
     return series.mode === 'replay' ? 350 : 400;
 }
 
@@ -618,6 +619,7 @@ function updateChartForSeries(series) {
     chart.data.datasets = buildChartDatasets(series);
     applyZoomRangeToChart(series, chart);
     chart.update('none');
+    resizeChartToContainer(chart, canvas);
 }
 
 function drawAllVisibleCharts(category) {
@@ -649,6 +651,7 @@ function drawLineChart(canvas, series) {
             applyZoomRangeToChart(series, existing);
             existing.update('none');
             showChartCanvas(canvas);
+            resizeChartToContainer(existing, canvas);
             return;
         }
         if (existing) existing.destroy();
@@ -663,6 +666,7 @@ function drawLineChart(canvas, series) {
         });
         chartInstances.set(chartId, chart);
         showChartCanvas(canvas);
+        resizeChartToContainer(chart, canvas);
     } catch (error) {
         showChartError(canvas, series, error);
     }
@@ -673,7 +677,29 @@ function setChartContainerHeight(canvas, series) {
     if (!container) return;
     const height = chartHeightForSeries(series);
     container.style.height = `${height}px`;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
     canvas.height = height;
+}
+
+function resizeChartToContainer(chart, canvas) {
+    const container = canvas.closest('[data-chart-container]');
+    if (!container || !chart) return;
+
+    const resize = () => {
+        const rect = container.getBoundingClientRect();
+        const width = Math.floor(rect.width);
+        const height = Math.floor(rect.height);
+        if (width > 0 && height > 0) {
+            chart.resize(width, height);
+            chart.update('none');
+        }
+    };
+
+    requestAnimationFrame(() => {
+        resize();
+        requestAnimationFrame(resize);
+    });
 }
 
 function showChartCanvas(canvas) {
