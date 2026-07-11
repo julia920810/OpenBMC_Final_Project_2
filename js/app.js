@@ -387,10 +387,6 @@ function createSensorCard(sensor, categoryClass) {
     const level = normalizeLevel(sensor.anomalyLevel);
     return `
         <div class="sensor-card ${categoryClass}-item anomaly-${level}" data-sensor-card="${escapeHtml(sensor.sensorName)}">
-            <div class="sensor-name">
-                <span class="sensor-status ${level}"></span>
-                ${escapeHtml(sensor.sensorName)}
-            </div>
             <div class="sensor-details">
                 <div class="sensor-detail"><span class="detail-label">Sensor Name</span><span class="detail-value sensor-name-value">${escapeHtml(sensor.sensorName)}</span></div>
                 <div class="sensor-detail"><span class="detail-label">Current Value</span><span class="detail-value ${level}" data-current-value>${escapeHtml(sensor.value)} ${escapeHtml(sensor.valueUnit)}</span></div>
