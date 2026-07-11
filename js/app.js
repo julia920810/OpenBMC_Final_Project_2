@@ -391,7 +391,7 @@ function createSensorCard(sensor, categoryClass) {
                 <div class="sensor-detail"><span class="detail-label">Sensor Name</span><span class="detail-value sensor-name-value">${escapeHtml(sensor.sensorName)}</span></div>
                 <div class="sensor-detail"><span class="detail-label">Current Value</span><span class="detail-value ${level}" data-current-value>${escapeHtml(sensor.value)} ${escapeHtml(sensor.valueUnit)}</span></div>
                 <div class="sensor-detail"><span class="detail-label">anomaly_level</span><span class="anomaly-pill ${level}" data-anomaly-level>${escapeHtml(sensor.anomalyLevel)}</span></div>
-                <div class="sensor-detail"><span class="detail-label">Unit</span><span class="detail-value compact">${escapeHtml(sensor.tableUnit || '-')}</span></div>
+                <div class="sensor-detail"><span class="detail-label">Unit</span><span class="detail-value compact unit-value">${escapeHtml(sensor.tableUnit || '-')}</span></div>
                 <div class="sensor-detail"><span class="detail-label">PID</span><span class="detail-value compact">${escapeHtml(sensor.pid || '-')}</span></div>
                 <div class="sensor-detail"><span class="detail-label">Event Time</span><span class="detail-value compact" data-event-time>${escapeHtml(sensor.taipeiTime)}</span></div>
             </div>

@@ -529,6 +529,14 @@ a.category-btn {
     text-align: right;
 }
 
+.detail-value.unit-value {
+    max-width: none;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    font-size: 0.78rem;
+    letter-spacing: 0;
+}
+
 .anomaly-pill {
     display: inline-flex;
     align-items: center;
