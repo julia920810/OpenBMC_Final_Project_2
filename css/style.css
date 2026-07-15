@@ -178,6 +178,10 @@ a.category-btn {
     margin-bottom: 15px;
 }
 
+.method-status-entry .icon {
+    color: #000000;
+}
+
 .category-btn .label {
     font-size: 1.3rem;
     margin-bottom: 8px;
